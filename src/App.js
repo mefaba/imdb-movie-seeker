@@ -18,7 +18,7 @@ function App() {
     return () => {};
   }, []);
   return (
-    <div className="App">
+    <div className="App container">
       <Navbar />
       <div className="container mt-3">
         <div className="d-grid gap-2 col-6 mx-auto">
