@@ -1,10 +1,22 @@
 //import logo from "./assets/logo.svg";
+import { useEffect, useState } from "react";
 import "./App.scss";
 import { Navbar } from "./components/Navbar";
 import { Switch, Route, Link } from "react-router-dom";
 import { HeardMovieForm, NoChanceForm, PickForMeForm } from "./components/Forms";
+import axios from "axios";
 
 function App() {
+  const [imdbData, setImdbData] = useState("");
+  useEffect(() => {
+    axios
+      .get("https://raw.githubusercontent.com/mefaba/imdblookamovie/master/data/imdb_ratings.json")
+      .then(function (response) {
+        // handle success
+        setImdbData(response.data);
+      });
+    return () => {};
+  }, []);
   return (
     <div className="App">
       <Navbar />
@@ -26,13 +38,13 @@ function App() {
 
       <Switch>
         <Route path="/heardamovie">
-          <HeardMovieForm />
+          <HeardMovieForm imdbData={imdbData} />
         </Route>
         <Route path="/nochance">
-          <NoChanceForm />
+          <NoChanceForm imdbData={imdbData} />
         </Route>
         <Route path="/pickforme">
-          <PickForMeForm />
+          <PickForMeForm imdbData={imdbData} />
         </Route>
       </Switch>
     </div>
