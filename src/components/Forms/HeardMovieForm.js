@@ -3,37 +3,29 @@ import React, { useState, useEffect } from "react";
 const HeardMovieForm = (props) => {
   const { imdbData } = props;
   const [imdbScore, setImdbScore] = useState(0);
-  /* const [formData, setFormData] = useState({
-    movieTitle: "",
-    gender: "",
-    ageGroup: "",
-  }); */
-
-  /* useEffect(() => {
-    const movieDataArray = imdbData.map((eachMovie) => {
-      console.log(eachMovie["original_title"]);
-    });
-
-    return () => {};
-  }, [formData]); */
 
   const movieLooker = (data) => {
-    console.log("data:", data);
+    //console.log("data:", data);
     const theMovie = imdbData.filter((eachMovie) => {
       return eachMovie["original_title"] === data.movieTitle;
     });
-    let searchCriteria = `${data.gender}_${data.ageGroup}_avg_vote`;
-    console.log("searchCriteria:", searchCriteria);
-    console.log("theMovie:", theMovie);
-    console.log(theMovie[0][searchCriteria]);
+    if (!theMovie.length) {
+      setImdbScore("no movie in this name is found");
+      return;
+    } else {
+      let searchCriteria = `${data.gender}_${data.ageGroup}_avg_vote`;
+      //console.log("searchCriteria:", searchCriteria);
+      //console.log("theMovie:", theMovie);
+      //console.log(theMovie[0][searchCriteria]);
 
-    setImdbScore(theMovie[0][searchCriteria]);
+      setImdbScore(theMovie[0][searchCriteria]);
+    }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const submitedData = new FormData(event.target);
-    console.log("submitedData:", submitedData.values());
+    //console.log("submitedData:", submitedData.values());
     movieLooker({
       movieTitle: submitedData.get("movie-title"),
       gender: submitedData.get("gender"),
@@ -57,6 +49,7 @@ const HeardMovieForm = (props) => {
             className="form-control"
             id="movietitle1"
             aria-describedby="movie-title"
+            required
           />
         </div>
         <div className="mb-3">
@@ -87,12 +80,12 @@ const HeardMovieForm = (props) => {
       </form>
       <div className="container">
         <div className="row">
-          <button type="button" class="btn btn-lg btn-success mb-5">
+          <button type="button" className="btn btn-lg btn-success mb-5">
             Success
           </button>
         </div>
 
-        <button type="button" class="btn btn-lg btn-warning">
+        <button type="button" className="btn btn-lg btn-warning">
           "{imdbScore}"
         </button>
       </div>

@@ -9,12 +9,10 @@ import axios from "axios";
 function App() {
   const [imdbData, setImdbData] = useState("");
   useEffect(() => {
-    axios
-      .get("https://raw.githubusercontent.com/mefaba/imdblookamovie/master/data/imdb_ratings.json")
-      .then(function (response) {
-        // handle success
-        setImdbData(response.data);
-      });
+    axios.get("https://raw.githubusercontent.com/mefaba/imdblookamovie/master/data/imdb_ratings.json").then(function (response) {
+      // handle success
+      setImdbData(response.data);
+    });
     return () => {};
   }, []);
   return (
