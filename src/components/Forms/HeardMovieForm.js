@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 const HeardMovieForm = (props) => {
   const { imdbData } = props;
@@ -44,13 +44,7 @@ const HeardMovieForm = (props) => {
           <label htmlFor="movietitle1" className="form-label">
             Movie Title
           </label>
-          <input
-            name="movie-title"
-            className="form-control"
-            id="movietitle1"
-            aria-describedby="movie-title"
-            required
-          />
+          <input name="movie-title" className="form-control" id="movietitle1" aria-describedby="movie-title" required />
         </div>
         <div className="mb-3">
           <label className="form-label">Gender</label>

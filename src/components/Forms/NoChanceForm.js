@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Dropdown } from "semantic-ui-react";
 const countries = [
   "USA",
@@ -338,7 +338,7 @@ const NoChanceForm = (props) => {
                 name="popularity"
                 id="popularityAll"
                 autoComplete="off"
-                value={[0, 10000000]}
+                value={[0, 100000000]}
                 defaultChecked
               />
               <label className="btn btn-outline-info" htmlFor="popularityAll">
@@ -352,7 +352,7 @@ const NoChanceForm = (props) => {
                 name="popularity"
                 id="popular"
                 autoComplete="off"
-                value={[80000, 10000000]}
+                value={[80000, 100000000]}
               />
               <label className="btn btn-outline-info" htmlFor="popular">
                 Popular
