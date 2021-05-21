@@ -95,7 +95,7 @@ const countriesArrayOfObjects = countries.map((country) => {
 const NoChanceForm = (props) => {
   const { imdbData } = props;
   //console.log("imdbData:", imdbData);
-  const [imdbScore, setImdbScore] = useState(0);
+  //const [imdbScore, setImdbScore] = useState(0);
   const [movieResults, setMovieResults] = useState([]);
   const [countryFilter, setCountryFilter] = useState([]);
 
@@ -120,7 +120,7 @@ const NoChanceForm = (props) => {
     }
     /* Age and Gender Sort */
     let searchCriteria = `${data.gender}_${data.ageGroup}_avg_vote`;
-    console.log("searchCriteria:", searchCriteria);
+    //console.log("searchCriteria:", searchCriteria);
 
     //console.log("unsorted matchedMovies:", matchedMovies);
 
@@ -135,7 +135,7 @@ const NoChanceForm = (props) => {
     });
     //console.log("sorted matchedMovies:", matchedMovies);
 
-    console.log("matchedMovies:", matchedMovies);
+    //console.log("matchedMovies:", matchedMovies);
     setMovieResults(matchedMovies);
   };
 
