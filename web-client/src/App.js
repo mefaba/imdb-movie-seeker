@@ -31,7 +31,7 @@ function App() {
           </Link>
 
           <Link to="/pickforme" className="btn btn-primary" type="button">
-            Pick for me!
+            Pick a movie for me!
           </Link>
         </div>
       </div>
