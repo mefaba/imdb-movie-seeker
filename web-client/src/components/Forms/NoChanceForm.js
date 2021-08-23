@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import { Dropdown } from "semantic-ui-react";
 const countries = [
   "USA",
@@ -93,36 +94,43 @@ const countriesArrayOfObjects = countries.map((country) => {
 });
 
 const NoChanceForm = (props) => {
+  const { register, handleSubmit } = useForm();
+
+  const onSubmit = (data) => {
+    console.log(data);
+    movieLooker({
+      gender: data.gender,
+      ageGroup: data["age-group"],
+      movieDate: data["movie-date"].split(","),
+      popularity: data.popularity.split(","),
+      duration: data.duration.split(","),
+      movieCountry: countryFilter,
+    });
+  };
+
   const { imdbData } = props;
-  //console.log("imdbData:", imdbData);
-  //const [imdbScore, setImdbScore] = useState(0);
   const [movieResults, setMovieResults] = useState([]);
   const [countryFilter, setCountryFilter] = useState([]);
+  console.log("🚀 ~ NoChanceForm ~ countryFilter", countryFilter);
 
   const movieLooker = (data) => {
     /* Bunch of Filter  */
     let matchedMovies = imdbData.filter((eachMovie) => {
-      //console.log('eachMovie["total_votes"]', eachMovie["total_votes"]);
-      //console.log(data.movieDate[0] < eachMovie.year);
-      return (
-        data.movieDate[0] < eachMovie.year &&
-        eachMovie.year < data.movieDate[1] &&
-        data.popularity[0] < eachMovie["total_votes"] &&
-        eachMovie["total_votes"] < data.popularity[1] &&
-        data.duration[0] < eachMovie["duration"] &&
-        eachMovie["duration"] < data.duration[1]
-      );
+      let dateFilter = data.movieDate[0] < eachMovie.year && eachMovie.year < data.movieDate[1];
+      let popularityFilter =
+        data.popularity[0] < eachMovie["total_votes"] && eachMovie["total_votes"] < data.popularity[1];
+      let durationFilter = data.duration[0] < eachMovie["duration"] && eachMovie["duration"] < data.duration[1];
+
+      return dateFilter && popularityFilter && durationFilter;
     });
     if (countryFilter.length) {
       matchedMovies = matchedMovies.filter((eachMovie) => {
         return countryFilter.includes(eachMovie.country);
       });
     }
+
     /* Age and Gender Sort */
     let searchCriteria = `${data.gender}_${data.ageGroup}_avg_vote`;
-    //console.log("searchCriteria:", searchCriteria);
-
-    //console.log("unsorted matchedMovies:", matchedMovies);
 
     matchedMovies = matchedMovies.sort((a, b) => {
       //console.log(a[searchCriteria], b[searchCriteria]);
@@ -139,35 +147,15 @@ const NoChanceForm = (props) => {
     setMovieResults(matchedMovies);
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    //console.log("event.target:", event.target);
-    const submitedData = new FormData(event.target);
-
-    movieLooker({
-      gender: submitedData.get("gender"),
-      ageGroup: submitedData.get("age-group"),
-      movieDate: submitedData.get("movie-date").split(","),
-      popularity: submitedData.get("popularity").split(","),
-      duration: submitedData.get("duration").split(","),
-      movieCountry: submitedData.get("movie-country"),
-    });
-  };
-
   const handleChange = (event, { value }) => {
-    /* const matchedMovies = imdbData.filter((eachMovie) => {
-      return value.includes(eachMovie.country);
-    }); */
     setCountryFilter(value);
   };
-
-  //console.log("movieResults:", movieResults);
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="d-grid gap-2 col-6 mx-auto">
           <label className="form-label">Gender</label>
-          <select name="gender" className="form-select" aria-label="Default select example">
+          <select {...register("gender")} className="form-select" aria-label="Default select example">
             <option select="true" value={"allgenders"}>
               All Together
             </option>
@@ -178,7 +166,7 @@ const NoChanceForm = (props) => {
         <div className="d-grid gap-2 col-6 mx-auto">
           <label className="form-label">Age Group</label>
 
-          <select name="age-group" className="form-select" aria-label="Default select example">
+          <select {...register("age-group")} className="form-select" aria-label="Default select example">
             <option select="true" value={"allages"}>
               All
             </option>
@@ -196,7 +184,7 @@ const NoChanceForm = (props) => {
               <input
                 type="radio"
                 className="btn-check"
-                name="movie-date"
+                {...register("movie-date")}
                 id="all-dates"
                 value={["0", "3000"]}
                 autoComplete="off"
@@ -210,7 +198,7 @@ const NoChanceForm = (props) => {
               <input
                 type="radio"
                 className="btn-check"
-                name="movie-date"
+                {...register("movie-date")}
                 id="last-5years"
                 value={["2016", "2021"]}
                 autoComplete="off"
@@ -223,7 +211,7 @@ const NoChanceForm = (props) => {
               <input
                 type="radio"
                 className="btn-check"
-                name="movie-date"
+                {...register("movie-date")}
                 id="last-10years"
                 value={["2011", "2021"]}
                 autoComplete="off"
@@ -236,7 +224,7 @@ const NoChanceForm = (props) => {
               <input
                 type="radio"
                 className="btn-check"
-                name="movie-date"
+                {...register("movie-date")}
                 id="date50s"
                 value={["1950", "1959"]}
                 autoComplete="off"
@@ -249,7 +237,7 @@ const NoChanceForm = (props) => {
               <input
                 type="radio"
                 className="btn-check"
-                name="movie-date"
+                {...register("movie-date")}
                 id="date60s"
                 value={["1960", "1969"]}
                 autoComplete="off"
@@ -262,7 +250,7 @@ const NoChanceForm = (props) => {
               <input
                 type="radio"
                 className="btn-check"
-                name="movie-date"
+                {...register("movie-date")}
                 id="date70s"
                 value={["1970", "1979"]}
                 autoComplete="off"
@@ -275,7 +263,7 @@ const NoChanceForm = (props) => {
               <input
                 type="radio"
                 className="btn-check"
-                name="movie-date"
+                {...register("movie-date")}
                 id="date80s"
                 value={["1980", "1989"]}
                 autoComplete="off"
@@ -288,7 +276,7 @@ const NoChanceForm = (props) => {
               <input
                 type="radio"
                 className="btn-check"
-                name="movie-date"
+                {...register("movie-date")}
                 id="date90s"
                 value={["1990", "1999"]}
                 autoComplete="off"
@@ -301,7 +289,7 @@ const NoChanceForm = (props) => {
               <input
                 type="radio"
                 className="btn-check"
-                name="movie-date"
+                {...register("movie-date")}
                 id="date2000s"
                 value={["2000", "2009"]}
                 autoComplete="off"
@@ -314,7 +302,7 @@ const NoChanceForm = (props) => {
               <input
                 type="radio"
                 className="btn-check"
-                name="movie-date"
+                {...register("movie-date")}
                 id="date2010s"
                 value={["2010", "2019"]}
                 autoComplete="off"
@@ -335,7 +323,7 @@ const NoChanceForm = (props) => {
               <input
                 type="radio"
                 className="btn-check"
-                name="popularity"
+                {...register("popularity")}
                 id="popularityAll"
                 autoComplete="off"
                 value={[0, 100000000]}
@@ -349,7 +337,7 @@ const NoChanceForm = (props) => {
               <input
                 type="radio"
                 className="btn-check"
-                name="popularity"
+                {...register("popularity")}
                 id="popular"
                 autoComplete="off"
                 value={[80000, 100000000]}
@@ -362,7 +350,7 @@ const NoChanceForm = (props) => {
               <input
                 type="radio"
                 className="btn-check"
-                name="popularity"
+                {...register("popularity")}
                 id="common"
                 autoComplete="off"
                 value={[10000, 80000]}
@@ -376,7 +364,7 @@ const NoChanceForm = (props) => {
               <input
                 type="radio"
                 className="btn-check"
-                name="popularity"
+                {...register("popularity")}
                 id="unknown"
                 autoComplete="off"
                 value={[0, 10000]}
@@ -397,7 +385,7 @@ const NoChanceForm = (props) => {
               <input
                 type="radio"
                 className="btn-check"
-                name="duration"
+                {...register("duration")}
                 id="durationAll"
                 autoComplete="off"
                 value={[0, 100000]}
@@ -411,7 +399,7 @@ const NoChanceForm = (props) => {
               <input
                 type="radio"
                 className="btn-check"
-                name="duration"
+                {...register("duration")}
                 id="between0-100"
                 autoComplete="off"
                 value={[0, 100]}
@@ -424,7 +412,7 @@ const NoChanceForm = (props) => {
               <input
                 type="radio"
                 className="btn-check"
-                name="duration"
+                {...register("duration")}
                 id="between100-140"
                 autoComplete="off"
                 value={[100, 140]}
@@ -437,7 +425,7 @@ const NoChanceForm = (props) => {
               <input
                 type="radio"
                 className="btn-check"
-                name="duration"
+                {...register("duration")}
                 id="between140-180"
                 autoComplete="off"
                 value={[140, 180]}
@@ -450,7 +438,7 @@ const NoChanceForm = (props) => {
               <input
                 type="radio"
                 className="btn-check"
-                name="duration"
+                {...register("duration")}
                 id="over180"
                 autoComplete="off"
                 value={[180, 100000]}
@@ -481,7 +469,7 @@ const NoChanceForm = (props) => {
 
         <div className="d-grid gap-2 col-6 mx-auto mt-3">
           <Dropdown
-            name="movie-country"
+            {...register("movie-country")}
             placeholder="Any & Select Country"
             fluid
             multiple
