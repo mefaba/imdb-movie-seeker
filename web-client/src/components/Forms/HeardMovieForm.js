@@ -1,54 +1,46 @@
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 
 const HeardMovieForm = (props) => {
   const { imdbData } = props;
   const [imdbScore, setImdbScore] = useState(0);
+  const { register, handleSubmit } = useForm();
+
+  const onSubmit = (data) => {
+    movieLooker(data);
+  };
 
   const movieLooker = (data) => {
-    //console.log("data:", data);
     const theMovie = imdbData.filter((eachMovie) => {
-      return eachMovie["original_title"] === data.movieTitle;
+      return eachMovie["original_title"] === data["movie-title"];
     });
     if (!theMovie.length) {
       setImdbScore("no movie in this name is found");
       return;
     } else {
-      let searchCriteria = `${data.gender}_${data.ageGroup}_avg_vote`;
-      //console.log("searchCriteria:", searchCriteria);
-      //console.log("theMovie:", theMovie);
-      //console.log(theMovie[0][searchCriteria]);
-
+      let searchCriteria = `${data.gender}_${data["age-group"]}_avg_vote`;
       setImdbScore(theMovie[0][searchCriteria]);
     }
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const submitedData = new FormData(event.target);
-    //console.log("submitedData:", submitedData.values());
-    movieLooker({
-      movieTitle: submitedData.get("movie-title"),
-      gender: submitedData.get("gender"),
-      ageGroup: submitedData.get("age-group"),
-    });
-    /* setFormData({
-      movieTitle: submitedData.get("movie-title"),
-      gender: submitedData.get("gender"),
-      ageGroup: submitedData.get("age-group"),
-    }); */
-  };
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-3">
           <label htmlFor="movietitle1" className="form-label">
             Movie Title
           </label>
-          <input name="movie-title" className="form-control" id="movietitle1" aria-describedby="movie-title" required />
+          <input
+            {...register("movie-title")}
+            className="form-control"
+            id="movietitle1"
+            aria-describedby="movie-title"
+            required
+          />
         </div>
         <div className="mb-3">
           <label className="form-label">Gender</label>
-          <select name="gender" className="form-select" aria-label="Default select example">
+          <select {...register("gender")} className="form-select" aria-label="Default select example">
             <option select="true" value={"allgenders"}>
               All Together
             </option>
@@ -58,7 +50,7 @@ const HeardMovieForm = (props) => {
         </div>
         <div className="mb-3">
           <label className="form-label">Age Group</label>
-          <select name="age-group" className="form-select" aria-label="Default select example">
+          <select {...register("age-group")} className="form-select" aria-label="Default select example">
             <option select="true" value={"allages"}>
               All
             </option>
