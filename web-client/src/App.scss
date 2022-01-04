@@ -50,6 +50,9 @@
     width: 100%;
     display: flex;
     flex-wrap: wrap;
+
+    max-height: 280px;
+    overflow-y: auto;
   }
 }
 

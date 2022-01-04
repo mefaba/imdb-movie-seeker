@@ -117,9 +117,7 @@ const NoChanceForm = (props) => {
   };
 
   const { imdbData } = props;
-  const [countryFilter, setCountryFilter] = useState([]);
   const [classGender, setClassGender] = useState({ activeMale: false, activeFemale: false });
-  console.log("🚀 ~ NoChanceForm ~ countryFilter", countryFilter);
 
   const movieLooker = (data) => {
     /* Bunch of Filter  */
@@ -545,16 +543,16 @@ const NoChanceForm = (props) => {
               <Dropdown.Menu className="w-100">
                 {countriesArrayOfObjects.map((eachCountryObject, index) => {
                   return (
-                    <div class="form-check m-1">
+                    <div className="form-check m-1" key={index}>
                       <input
-                        class="form-check-input"
+                        className="form-check-input"
                         type="checkbox"
                         value={eachCountryObject.value}
                         id={eachCountryObject + index}
                         name="country"
                         {...register("country")}
                       />
-                      <label class="form-check-label" htmlFor={eachCountryObject + index}>
+                      <label className="form-check-label" htmlFor={eachCountryObject + index}>
                         {eachCountryObject.value}
                       </label>
                     </div>
