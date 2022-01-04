@@ -1,8 +1,14 @@
-# imdb-movie-seeker
 
+<div align="center">
+  <h1>imdb-movie-seeker</h1>
+  <a href="https://imdbmovieseeker.netlify.app/">View Demo</a>
+</div>
+  <br />
+<div>
 <p> Imdb Movie Seeker is simply a movie search tool, but an extraordinary one.</p>
 <p> We used gender, age, popularity, and country data to show you a unique list of movies.</p>
-
+  
+</div>
 <!-- ABOUT THE PROJECT -->
 
 ## About The Project
