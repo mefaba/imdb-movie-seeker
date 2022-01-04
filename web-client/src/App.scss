@@ -1,39 +1,127 @@
-@import "../node_modules/bootstrap/scss/bootstrap.scss";
-.App {
-  text-align: center;
+@import url("https://fonts.googleapis.com/css2?family=Romanesco&display=swap");
+
+//Buttons
+
+.primary-button {
+  background-color: #5db075;
+  border-color: #5db075;
+}
+.secondary-button {
+  &.active {
+    background-color: #0080ff;
+    border-color: #0080ff;
+  }
+  &:focus {
+  }
+}
+.card.shadow {
+  box-shadow: 0.3px 0.7px 2.2px rgba(0, 0, 0, 0.02), 0.7px 1.7px 5.3px rgba(0, 0, 0, 0.028),
+    1.4px 3.1px 10px rgba(0, 0, 0, 0.035), 2.5px 5.6px 17.9px rgba(0, 0, 0, 0.042),
+    4.6px 10.4px 33.4px rgba(0, 0, 0, 0.05), 11px 25px 80px rgba(0, 0, 0, 0.07) !important;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.gender-container {
+  background-color: #5db075;
+  border-radius: 8px;
+  padding: 1rem;
+  .label {
+    font-size: 14px;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.age-container {
+  background-color: #5db075;
+  border-radius: 8px;
+  padding: 1rem;
+  .label {
+    font-size: 14px;
+  }
+}
+
+.movie-sort-number {
+  font-family: "Romanesco", cursive;
+  font-size: 48px;
+  h1 {
+    margin: 0;
+  }
+}
+.show.dropup {
+  .dropdown-menu.show {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+.movie-card {
+  position: relative;
+  .imdb-rating-indicator {
+    position: absolute;
+    background-color: #ffd600;
+    color: black;
+    top: 0;
+    left: 0;
+    padding: 8px;
+    margin: 8px;
+    border-radius: 8px;
+  }
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.swiper {
+  width: 300px;
+  height: 400px;
+}
+
+.swiper-slide {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  border-radius: 18px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
 }
 
-.App-link {
-  color: #61dafb;
+.swiper-slide:nth-child(1n) {
+  background-color: rgb(206, 17, 17);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.swiper-slide:nth-child(2n) {
+  background-color: rgb(0, 140, 255);
+}
+
+.swiper-slide:nth-child(3n) {
+  background-color: rgb(10, 184, 111);
+}
+
+.swiper-slide:nth-child(4n) {
+  background-color: rgb(211, 122, 7);
+}
+
+.swiper-slide:nth-child(5n) {
+  background-color: rgb(118, 163, 12);
+}
+
+.swiper-slide:nth-child(6n) {
+  background-color: rgb(180, 10, 47);
+}
+
+.swiper-slide:nth-child(7n) {
+  background-color: rgb(35, 99, 19);
+}
+
+.swiper-slide:nth-child(8n) {
+  background-color: rgb(0, 68, 255);
+}
+
+.swiper-slide:nth-child(9n) {
+  background-color: rgb(218, 12, 218);
+}
+
+.swiper-slide:nth-child(10n) {
+  background-color: rgb(54, 94, 77);
 }

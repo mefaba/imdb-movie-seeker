@@ -1,6 +1,10 @@
 import React, { useState } from "react";
+import { Dropdown, InputGroup } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { Dropdown } from "semantic-ui-react";
+import { useNavigate } from "react-router-dom";
+
+//import { Dropdown } from "semantic-ui-react";
+
 const countries = [
   "USA",
   "Germany",
@@ -95,22 +99,26 @@ const countriesArrayOfObjects = countries.map((country) => {
 
 const NoChanceForm = (props) => {
   const { register, handleSubmit } = useForm();
+  let navigate = useNavigate();
+
+  const { setMovieResults } = props;
 
   const onSubmit = (data) => {
     console.log(data);
     movieLooker({
-      gender: data.gender,
+      gender: classGender.activeMale ? "males" : classGender.activeFemale ? "females" : "allgenders",
       ageGroup: data["age-group"],
       movieDate: data["movie-date"].split(","),
       popularity: data.popularity.split(","),
       duration: data.duration.split(","),
-      movieCountry: countryFilter,
+      movieCountry: data.country,
     });
+    navigate("/movielist");
   };
 
   const { imdbData } = props;
-  const [movieResults, setMovieResults] = useState([]);
   const [countryFilter, setCountryFilter] = useState([]);
+  const [classGender, setClassGender] = useState({ activeMale: false, activeFemale: false });
   console.log("🚀 ~ NoChanceForm ~ countryFilter", countryFilter);
 
   const movieLooker = (data) => {
@@ -123,15 +131,15 @@ const NoChanceForm = (props) => {
 
       return dateFilter && popularityFilter && durationFilter;
     });
-    if (countryFilter.length) {
+    if (data.movieCountry.length) {
       matchedMovies = matchedMovies.filter((eachMovie) => {
-        return countryFilter.includes(eachMovie.country);
+        return eachMovie.country.split().some((r) => data.movieCountry.includes(r));
       });
     }
 
     /* Age and Gender Sort */
     let searchCriteria = `${data.gender}_${data.ageGroup}_avg_vote`;
-
+    //let searchCriteria = `allgenders_${data.ageGroup}_avg_vote`;
     matchedMovies = matchedMovies.sort((a, b) => {
       //console.log(a[searchCriteria], b[searchCriteria]);
       if (a[searchCriteria] > b[searchCriteria]) {
@@ -141,46 +149,107 @@ const NoChanceForm = (props) => {
       }
       return 0;
     });
-    //console.log("sorted matchedMovies:", matchedMovies);
 
-    //console.log("matchedMovies:", matchedMovies);
+    console.log("matchedMovies:", matchedMovies);
     setMovieResults(matchedMovies);
   };
 
-  const handleChange = (event, { value }) => {
-    setCountryFilter(value);
+  const handleChange_gender = (gender) => {
+    if (gender === "male") {
+      setClassGender({ activeMale: !classGender.activeMale, activeFemale: false });
+    } else {
+      setClassGender({ activeMale: false, activeFemale: !classGender.activeFemale });
+    }
   };
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="d-grid gap-2 col-6 mx-auto">
-          <label className="form-label">Gender</label>
-          <select {...register("gender")} className="form-select" aria-label="Default select example">
-            <option select="true" value={"allgenders"}>
-              All Together
-            </option>
-            <option value={"males"}>Male</option>
-            <option value={"females"}>Female</option>
-          </select>
+        <div className="text-center">
+          <h1>Select Filter</h1>
         </div>
-        <div className="d-grid gap-2 col-6 mx-auto">
+        <div className="container">
+          <label className="label">Gender</label>
+          <div className="d-flex justify-content-center gender-container">
+            <button
+              type="button"
+              className={`btn btn-secondary secondary-button mx-2 w-25 ${classGender.activeMale ? "active" : null}`}
+              onClick={() => handleChange_gender("male")}
+            >
+              Male
+            </button>
+            <button
+              type="button"
+              className={`btn btn-secondary secondary-button mx-2 w-25 ${classGender.activeFemale ? "active" : null}`}
+              onClick={() => handleChange_gender("female")}
+            >
+              Female
+            </button>
+          </div>
+        </div>
+        <div className="container">
           <label className="form-label">Age Group</label>
-
-          <select {...register("age-group")} className="form-select" aria-label="Default select example">
-            <option select="true" value={"allages"}>
-              All
-            </option>
-            <option value={"18age"}>18-29</option>
-            <option value={"30age"}>30-44</option>
-            <option value={"45age"}>Over 45</option>
-          </select>
+          <div className="age-container">
+            <div className="form-check form-check-inline">
+              <input
+                {...register("age-group")}
+                className="form-check-input"
+                type="radio"
+                name="inlineRadioOptions"
+                id="inlineRadio1"
+                value="allages"
+                defaultChecked
+              />
+              <label className="form-check-label" htmlFor="inlineRadio1">
+                All
+              </label>
+            </div>
+            <div className="form-check form-check-inline">
+              <input
+                {...register("age-group")}
+                className="form-check-input"
+                type="radio"
+                name="inlineRadioOptions"
+                id="inlineRadio1"
+                value="18age"
+              />
+              <label className="form-check-label" htmlFor="inlineRadio1">
+                18-29
+              </label>
+            </div>
+            <div className="form-check form-check-inline">
+              <input
+                {...register("age-group")}
+                className="form-check-input"
+                type="radio"
+                name="inlineRadioOptions"
+                id="inlineRadio2"
+                value="30age"
+              />
+              <label className="form-check-label" htmlFor="inlineRadio2">
+                30-45
+              </label>
+            </div>
+            <div className="form-check form-check-inline">
+              <input
+                {...register("age-group")}
+                className="form-check-input"
+                type="radio"
+                name="inlineRadioOptions"
+                id="inlineRadio3"
+                value="45age"
+              />
+              <label className="form-check-label" htmlFor="inlineRadio3">
+                Over 45
+              </label>
+            </div>
+          </div>
         </div>
         <div className="container">
           <div className="row">
             <label className="form-label">Release Date</label>
           </div>
           <div className="row justify-content-center mb-3">
-            <div className="col-auto">
+            <div className="col-auto m-1">
               <input
                 type="radio"
                 className="btn-check"
@@ -190,11 +259,11 @@ const NoChanceForm = (props) => {
                 autoComplete="off"
                 defaultChecked
               />
-              <label className="btn btn-outline-info" htmlFor="all-dates">
+              <label className="btn btn-outline-success" htmlFor="all-dates">
                 All
               </label>
             </div>
-            <div className="col-auto">
+            <div className="col-auto  m-1">
               <input
                 type="radio"
                 className="btn-check"
@@ -203,11 +272,11 @@ const NoChanceForm = (props) => {
                 value={["2016", "2021"]}
                 autoComplete="off"
               />
-              <label className="btn btn-outline-info" htmlFor="last-5years">
+              <label className="btn btn-outline-success" htmlFor="last-5years">
                 Last 5 Years
               </label>
             </div>
-            <div className="col-auto">
+            <div className="col-auto m-1">
               <input
                 type="radio"
                 className="btn-check"
@@ -216,11 +285,11 @@ const NoChanceForm = (props) => {
                 value={["2011", "2021"]}
                 autoComplete="off"
               />
-              <label className="btn btn-outline-info" htmlFor="last-10years">
+              <label className="btn btn-outline-success" htmlFor="last-10years">
                 Last 10 Years
               </label>
             </div>
-            <div className="col-auto">
+            <div className="col-auto m-1">
               <input
                 type="radio"
                 className="btn-check"
@@ -229,11 +298,11 @@ const NoChanceForm = (props) => {
                 value={["1950", "1959"]}
                 autoComplete="off"
               />
-              <label className="btn btn-outline-info" htmlFor="date50s">
+              <label className="btn btn-outline-success" htmlFor="date50s">
                 50s
               </label>
             </div>
-            <div className="col-auto">
+            <div className="col-auto m-1">
               <input
                 type="radio"
                 className="btn-check"
@@ -242,24 +311,24 @@ const NoChanceForm = (props) => {
                 value={["1960", "1969"]}
                 autoComplete="off"
               />
-              <label className="btn btn-outline-info" htmlFor="date60s">
+              <label className="btn btn-outline-success" htmlFor="date60s">
                 60s
               </label>
             </div>
-            <div className="col-auto">
+            <div className="col-auto m-1">
               <input
                 type="radio"
-                className="btn-check"
+                className="btn-check "
                 {...register("movie-date")}
                 id="date70s"
                 value={["1970", "1979"]}
                 autoComplete="off"
               />
-              <label className="btn btn-outline-info" htmlFor="date70s">
+              <label className="btn btn-outline-success" htmlFor="date70s">
                 70s
               </label>
             </div>
-            <div className="col-auto">
+            <div className="col-auto m-1">
               <input
                 type="radio"
                 className="btn-check"
@@ -268,11 +337,11 @@ const NoChanceForm = (props) => {
                 value={["1980", "1989"]}
                 autoComplete="off"
               />
-              <label className="btn btn-outline-info" htmlFor="date80s">
+              <label className="btn btn-outline-success" htmlFor="date80s">
                 80s
               </label>
             </div>
-            <div className="col-auto">
+            <div className="col-auto m-1">
               <input
                 type="radio"
                 className="btn-check"
@@ -281,11 +350,11 @@ const NoChanceForm = (props) => {
                 value={["1990", "1999"]}
                 autoComplete="off"
               />
-              <label className="btn btn-outline-info" htmlFor="date90s">
+              <label className="btn btn-outline-success" htmlFor="date90s">
                 90s
               </label>
             </div>
-            <div className="col-auto">
+            <div className="col-auto m-1">
               <input
                 type="radio"
                 className="btn-check"
@@ -294,11 +363,11 @@ const NoChanceForm = (props) => {
                 value={["2000", "2009"]}
                 autoComplete="off"
               />
-              <label className="btn btn-outline-info" htmlFor="date2000s">
+              <label className="btn btn-outline-success" htmlFor="date2000s">
                 2000s
               </label>
             </div>
-            <div className="col-auto">
+            <div className="col-auto m-1">
               <input
                 type="radio"
                 className="btn-check"
@@ -307,7 +376,7 @@ const NoChanceForm = (props) => {
                 value={["2010", "2019"]}
                 autoComplete="off"
               />
-              <label className="btn btn-outline-info" htmlFor="date2010s">
+              <label className="btn btn-outline-success" htmlFor="date2010s">
                 2010s
               </label>
             </div>
@@ -319,7 +388,7 @@ const NoChanceForm = (props) => {
             <label className="form-label">Popularity</label>
           </div>
           <div className="row justify-content-center">
-            <div className="col-auto">
+            <div className="col-auto m-1">
               <input
                 type="radio"
                 className="btn-check"
@@ -327,13 +396,12 @@ const NoChanceForm = (props) => {
                 id="popularityAll"
                 autoComplete="off"
                 value={[0, 100000000]}
-                defaultChecked
               />
-              <label className="btn btn-outline-info" htmlFor="popularityAll">
+              <label className="btn btn-outline-success" htmlFor="popularityAll">
                 All
               </label>
             </div>
-            <div className="col-auto">
+            <div className="col-auto m-1">
               <input
                 type="radio"
                 className="btn-check"
@@ -341,12 +409,13 @@ const NoChanceForm = (props) => {
                 id="popular"
                 autoComplete="off"
                 value={[80000, 100000000]}
+                defaultChecked
               />
-              <label className="btn btn-outline-info" htmlFor="popular">
+              <label className="btn btn-outline-success" htmlFor="popular">
                 Popular
               </label>
             </div>
-            <div className="col-auto">
+            <div className="col-auto m-1">
               <input
                 type="radio"
                 className="btn-check"
@@ -354,13 +423,12 @@ const NoChanceForm = (props) => {
                 id="common"
                 autoComplete="off"
                 value={[10000, 80000]}
-                defaultChecked
               />
-              <label className="btn btn-outline-info" htmlFor="common">
+              <label className="btn btn-outline-success" htmlFor="common">
                 Common
               </label>
             </div>
-            <div className="col-auto">
+            <div className="col-auto m-1">
               <input
                 type="radio"
                 className="btn-check"
@@ -369,7 +437,7 @@ const NoChanceForm = (props) => {
                 autoComplete="off"
                 value={[0, 10000]}
               />
-              <label className="btn btn-outline-info" htmlFor="unknown">
+              <label className="btn btn-outline-success" htmlFor="unknown">
                 Unknown/Rare
               </label>
             </div>
@@ -381,7 +449,7 @@ const NoChanceForm = (props) => {
             <label className="form-label">Duration(minutes)</label>
           </div>
           <div className="row justify-content-center">
-            <div className="col-auto">
+            <div className="col-auto m-1">
               <input
                 type="radio"
                 className="btn-check"
@@ -391,11 +459,11 @@ const NoChanceForm = (props) => {
                 value={[0, 100000]}
                 defaultChecked
               />
-              <label className="btn btn-outline-info" htmlFor="durationAll">
+              <label className="btn btn-outline-success" htmlFor="durationAll">
                 All
               </label>
             </div>
-            <div className="col-auto">
+            <div className="col-auto m-1">
               <input
                 type="radio"
                 className="btn-check"
@@ -404,11 +472,11 @@ const NoChanceForm = (props) => {
                 autoComplete="off"
                 value={[0, 100]}
               />
-              <label className="btn btn-outline-info" htmlFor="between0-100">
+              <label className="btn btn-outline-success" htmlFor="between0-100">
                 Up to 100
               </label>
             </div>
-            <div className="col-auto">
+            <div className="col-auto m-1">
               <input
                 type="radio"
                 className="btn-check"
@@ -417,11 +485,11 @@ const NoChanceForm = (props) => {
                 autoComplete="off"
                 value={[100, 140]}
               />
-              <label className="btn btn-outline-info" htmlFor="between100-140">
+              <label className="btn btn-outline-success" htmlFor="between100-140">
                 100-140
               </label>
             </div>
-            <div className="col-auto">
+            <div className="col-auto m-1">
               <input
                 type="radio"
                 className="btn-check"
@@ -430,11 +498,11 @@ const NoChanceForm = (props) => {
                 autoComplete="off"
                 value={[140, 180]}
               />
-              <label className="btn btn-outline-info" htmlFor="between140-180">
+              <label className="btn btn-outline-success" htmlFor="between140-180">
                 140-180
               </label>
             </div>
-            <div className="col-auto">
+            <div className="col-auto m-1">
               <input
                 type="radio"
                 className="btn-check"
@@ -443,7 +511,7 @@ const NoChanceForm = (props) => {
                 autoComplete="off"
                 value={[180, 100000]}
               />
-              <label className="btn btn-outline-info" htmlFor="over180">
+              <label className="btn btn-outline-success" htmlFor="over180">
                 Over 180
               </label>
             </div>
@@ -467,8 +535,35 @@ const NoChanceForm = (props) => {
           </select>
         </div> */}
 
-        <div className="d-grid gap-2 col-6 mx-auto mt-3">
-          <Dropdown
+        <div className="container">
+          <div className="row">
+            <label className="form-label">Country of Origin</label>
+          </div>
+          <div className="age-container text-center">
+            <Dropdown autoClose="outside" id="dropdown-basic-button" title="Dropdown button" drop={"up"}>
+              <Dropdown.Toggle className="w-100">Select</Dropdown.Toggle>
+              <Dropdown.Menu className="w-100">
+                {countriesArrayOfObjects.map((eachCountryObject, index) => {
+                  return (
+                    <div class="form-check m-1">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value={eachCountryObject.value}
+                        id={eachCountryObject + index}
+                        name="country"
+                        {...register("country")}
+                      />
+                      <label class="form-check-label" htmlFor={eachCountryObject + index}>
+                        {eachCountryObject.value}
+                      </label>
+                    </div>
+                  );
+                })}
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+          {/* <Dropdown
             {...register("movie-country")}
             placeholder="Any & Select Country"
             fluid
@@ -477,24 +572,14 @@ const NoChanceForm = (props) => {
             search
             options={countriesArrayOfObjects}
             onChange={handleChange}
-          />
+          /> */}
         </div>
-        <button type="submit" className="btn btn-primary m-3">
-          Get IMDB Score
-        </button>
+        <div className="text-center">
+          <button type="submit" className="btn btn-primary m-3">
+            Search
+          </button>
+        </div>
       </form>
-      <div className="container">
-        Filmler
-        {movieResults.map((movie, index) => {
-          return (
-            <div key={movie.imdb_title_id}>
-              <button type="button" className="btn btn-lg btn-warning mb-1">
-                {index}-{movie.original_title}, {movie.weighted_average_vote}
-              </button>
-            </div>
-          );
-        })}
-      </div>
     </div>
   );
 };
