@@ -131,7 +131,7 @@ const NoChanceForm = (props) => {
 
       return dateFilter && popularityFilter && durationFilter;
     });
-    if (data.movieCountry.length) {
+    if (data.movieCountry && data.movieCountry.length) {
       matchedMovies = matchedMovies.filter((eachMovie) => {
         return eachMovie.country.split().some((r) => data.movieCountry.includes(r));
       });
