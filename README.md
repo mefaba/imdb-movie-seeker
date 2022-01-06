@@ -42,3 +42,6 @@
     "females_45age_avg_vote": 8.9
   },
 ```
+
+## Resources
+https://www.themoviedb.org/documentation/api
